@@ -22,7 +22,9 @@ namespace ScanPlantAPI.Data
         /// Tabela de plantas
         /// </summary>
         public DbSet<Plant> Plants { get; set; }
+        //Tabela dos comentarios PORRA XD
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<ApplicationUser> ApplicationUser { get; set; }
 
         /// <summary>
         /// Configuração do modelo
