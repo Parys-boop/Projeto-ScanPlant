@@ -14,7 +14,7 @@ namespace ScanPlantAPI.Models
         /// Nome completo do usuário
         /// </summary>
         [StringLength(100)]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty;
 
         /// <summary>
         /// Data de criação da conta
@@ -30,6 +30,6 @@ namespace ScanPlantAPI.Models
         /// Coleção de plantas registradas pelo usuário
         /// </summary>
         public virtual ICollection<Plant> Plants { get; set; } = new List<Plant>();
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }
