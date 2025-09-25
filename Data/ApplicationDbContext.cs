@@ -22,9 +22,9 @@ namespace ScanPlantAPI.Data
         /// Tabela de plantas
         /// </summary>
         public DbSet<Plant> Plants { get; set; }
-        //Tabela dos comentarios PORRA XD
         public DbSet<Comment> Comments { get; set; }
-        public DbSet<ApplicationUser> ApplicationUser { get; set; }
+      public DbSet<Lembrete> Lembretes { get; set; }
+      public DbSet<Notification> Notifications { get; set; }
 
         /// <summary>
         /// Configuração do modelo
@@ -41,7 +41,7 @@ namespace ScanPlantAPI.Data
                 entity.Property(e => e.ScientificName).IsRequired();
                 entity.Property(e => e.ImageUrl).IsRequired();
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
-                
+
                 // Relacionamento com usuário
                 entity.HasOne(e => e.User)
                       .WithMany(u => u.Plants)
@@ -66,6 +66,50 @@ namespace ScanPlantAPI.Data
                       .WithMany(u => u.Comments)
                       .HasForeignKey(e => e.UserId)
                       .OnDelete(DeleteBehavior.Cascade);
+            });
+
+            // Configuração da tabela de lembretes
+            modelBuilder.Entity<Lembrete>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Titulo).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Descricao).HasMaxLength(500);
+                entity.Property(e => e.CriadoEm).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                // Relacionamento obrigatório com usuário
+                entity.HasOne(e => e.User)
+                      .WithMany(u => u.Lembretes)
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Relacionamento opcional com planta
+                entity.HasOne(e => e.Plant)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlantId)
+                      .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // Configuração da tabela de notificações
+            modelBuilder.Entity<Notification>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(120);
+                entity.Property(e => e.Message).IsRequired().HasMaxLength(1000);
+                entity.Property(e => e.Type).HasMaxLength(60);
+                entity.Property(e => e.Status).HasMaxLength(20);
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                // Relacionamento obrigatório com usuário destinatário
+                entity.HasOne(e => e.User)
+                      .WithMany(u => u.Notifications)
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                // Relacionamento opcional com planta
+                entity.HasOne(e => e.Plant)
+                      .WithMany()
+                      .HasForeignKey(e => e.PlantId)
+                      .OnDelete(DeleteBehavior.SetNull);
             });
         }
     }
